@@ -1,0 +1,7 @@
+## Interface: 30000
+## Title: Damn Achievement Spam
+## Notes: Reduces the spam in guild chat for people getting dungeon achievements
+## Author: Mayen
+## SavedVariables: DamnAchievementSpamDB
+
+DamnAchievementSpam.lua
