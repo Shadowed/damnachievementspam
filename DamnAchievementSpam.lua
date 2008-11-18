@@ -10,15 +10,19 @@ local L = {
 	["%s have earned the achievement %s!"] = "%s have earned the achievement %s!",
 }
 
+-- Add an achievement
+local function addAchievement(category, id)
+	id = GetAchievementInfo(category, id)
+	
+	-- We save them for achievements like badges where you have single/25/50/blah/blah/blah it's not perfect, but it works decently
+	DamnAchievementSpamDB[id] = true
+	filterList[id] = true
+end
+
 -- Scan list of achievement ids
 local function scanAchievements(category, parentCategory)
 	for i=1, (GetCategoryNumAchievements(category)) do
-		local id = GetAchievementInfo(category, i)
-		filterList[id] = true
-		
-		-- We save them for achievements like badges where you have single/25/50/blah/blah/blah
-		-- it's not perfect, but it works decently
-		DamnAchievementSpamDB[id] = true
+		addAchievement(category, i)
 	end
 	
 	-- Scan children of this category
@@ -109,7 +113,16 @@ frame:SetScript("OnEvent", function(self, event)
 	-- Set the filter to our saved list first
 	DamnAchievementSpamDB = DamnAchievementSpamDB or {}
 	filterList = DamnAchievementSpamDB
-
+	
+	-- Malygos, realm first
+	addAchievement(81, 1400)
+	
+	-- Sartharion, realm first
+	addAchievement(81, 456)
+	
+	-- Naxxramas, realm first
+	addAchievement(81, 1402)
+	
 	-- Scan Dungeons & raids
 	scanAchievements(168)
 	
