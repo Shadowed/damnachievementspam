@@ -8,6 +8,7 @@ local frame
 
 local L = {
 	["%s have earned the achievement %s!"] = "%s have earned the achievement %s!",
+	["%s has earned the achievement %s!"] = "%s has earned the achievement %s!",
 }
 
 -- Scan list of achievement ids
@@ -49,7 +50,7 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 		
 		-- Add this person to the list as having gotten it
 		achievements[type][achievementID] = achievements[type][achievementID] or {}
-		table.insert(achievements[type][achievementID], string.format("|Hplayer:%s|h%s|h", author, author))
+		table.insert(achievements[type][achievementID], author)
 		
 		-- Start this to run in 0.50 seconds or so if we haven't
 		if( not timeouts[type][achievementID] ) then
@@ -85,9 +86,26 @@ frame:SetScript("OnUpdate", function(self, elapsed)
 
 			-- Timed out, list everyone who got this
 			if( timeouts[type][id] <= 0 ) then
+				local players
 				local info = ChatTypeInfo[type]
 				for frame in pairs(chats[type]) do
-					frame:AddMessage(string.format(L["%s have earned the achievement %s!"], table.concat(achievements[type][id], ", "), GetAchievementLink(id)), info.r, info.g, info.b)
+					-- Use the plural since more than one got it
+					if( #(achievements[type][id]) > 1 ) then
+						-- Embed the player meta data without brackets
+						if( not players ) then
+							for pID, player in pairs(achievements[type][id]) do
+								achievements[type][id][pID] = string.format("|Hplayer:%s|h%s|h", player, player)
+							end
+							
+							players = table.concat(achievements[type][id], ", ")
+						end
+						
+						frame:AddMessage(string.format(L["%s have earned the achievement %s!"], players, GetAchievementLink(id)), info.r, info.g, info.b)
+					
+					-- Use singular + embed brackets into it
+					else
+						frame:AddMessage(string.format(L["%s has earned the achievement %s!"], string.format("|Hplayer:%s|h[%s]|h", achievements[type][id][1], achievements[type][id][1]), GetAchievementLink(id)), info.r, info.g, info.b)
+					end
 				end
 
 				TOTAL_TIMEOUTS = TOTAL_TIMEOUTS - 1
