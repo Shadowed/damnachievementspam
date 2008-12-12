@@ -52,11 +52,12 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 		achievements[type][achievementID] = achievements[type][achievementID] or {}
 		table.insert(achievements[type][achievementID], author)
 		
-		-- Start this to run in 0.50 seconds or so if we haven't
+		-- Set the total number of timers we're running
 		if( not timeouts[type][achievementID] ) then
-			TOTAL_TIMEOUTS = TOTAL_TIMEOUTS + 0.50
+			TOTAL_TIMEOUTS = TOTAL_TIMEOUTS + 1
 		end
 		
+		-- Start this to run in 0.50 seconds or so if we haven't
 		timeouts[type][achievementID] = timeouts[type][achievementID] or 0.50
 		
 		-- Annnd start the countdown
@@ -75,7 +76,8 @@ frame:Hide()
 
 -- Timer so we know if we need to output all the achievements
 frame:SetScript("OnUpdate", function(self, elapsed)
-	if( TOTAL_TIMEOUTS == 0 ) then
+	if( TOTAL_TIMEOUTS <= 0 ) then
+		TOTAL_TIMEOUTS = 0
 		self:Hide()
 		return
 	end
