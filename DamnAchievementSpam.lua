@@ -50,8 +50,18 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 		
 		-- Add this person to the list as having gotten it
 		achievements[type][achievementID] = achievements[type][achievementID] or {}
-		table.insert(achievements[type][achievementID], author)
 		
+		local found = false
+		for _, name in pairs(achievements[type][achievementID]) do
+			if( name == author ) then
+				found = true
+				break
+			end
+		end
+		if( not found ) then
+			table.insert(achievements[type][achievementID], author)
+		end
+
 		-- Set the total number of timers we're running
 		if( not timeouts[type][achievementID] ) then
 			TOTAL_TIMEOUTS = TOTAL_TIMEOUTS + 1
