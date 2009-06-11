@@ -4,7 +4,7 @@ local achievements = {["GUILD_ACHIEVEMENT"] = {}, ["ACHIEVEMENT"] = {}}
 local timeouts = {["GUILD_ACHIEVEMENT"] = {}, ["ACHIEVEMENT"] = {}}
 local chats = {["GUILD_ACHIEVEMENT"] = {}, ["ACHIEVEMENT"] = {}}
 local TOTAL_TIMEOUTS = 0
-local frame
+local frame, loadedDB
 
 local L = {
 	["%s have earned the achievement %s!"] = "%s have earned the achievement %s!",
@@ -18,7 +18,6 @@ local function scanAchievements(category, parentCategory)
 
 		-- We save them for achievements like badges where you have single/25/50/blah/blah/blah it's not perfect, but it works decently
 		DamnAchievementSpamDB[id] = true
-		filterList[id] = true
 	end
 	
 	-- Scan children of this category
@@ -31,6 +30,27 @@ local function scanAchievements(category, parentCategory)
 	end
 end
 
+local function loadDB()
+	if( loadedDB ) then return end
+	loadedDB = true
+	
+	-- Set the filter to our saved list first
+	DamnAchievementSpamDB = DamnAchievementSpamDB or {}
+	filterList = DamnAchievementSpamDB
+	
+	-- Malygos, Sartharion, Naxxramas
+	local firsts = {1400, 456, 1402, 3259, 3117}
+	for _, id in pairs(firsts) do
+		DamnAchievementSpamDB[id] = true
+	end
+	
+	-- Scan Dungeons & raids
+	scanAchievements(168)
+	
+	-- Scan Player vs Player
+	scanAchievements(95)
+end
+
 -- Do we need to filter them?
 local orig_ChatFrame_MessageEventHandler = ChatFrame_MessageEventHandler
 function ChatFrame_MessageEventHandler(self, event, ...)
@@ -38,6 +58,9 @@ function ChatFrame_MessageEventHandler(self, event, ...)
 	if( event ~= "CHAT_MSG_GUILD_ACHIEVEMENT" and event ~= "CHAT_MSG_ACHIEVEMENT" ) then
 		return orig_ChatFrame_MessageEventHandler(self, event, ...)
 	end
+		
+	-- Load a list of achievements to disable
+	loadDB()
 	
 	local msg, author = select(1, ...)
 	local achievementID = string.match(msg, "|Hachievement:([0-9]+):(.+)|h")
@@ -128,27 +151,4 @@ frame:SetScript("OnUpdate", function(self, elapsed)
 			end
 		end
 	end
-end)
-
--- Cache list of achievementID's to watch
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:SetScript("OnEvent", function(self, event)
-	self:UnregisterAllEvents()
-	
-	-- Set the filter to our saved list first
-	DamnAchievementSpamDB = DamnAchievementSpamDB or {}
-	filterList = DamnAchievementSpamDB
-	
-	-- Malygos, Sartharion, Naxxramas
-	local firsts = {1400, 456, 1402}
-	for _, id in pairs(firsts) do
-		DamnAchievementSpamDB[id] = true
-		filterList[id] = true
-	end
-	
-	-- Scan Dungeons & raids
-	scanAchievements(168)
-	
-	-- Scan Player vs Player
-	scanAchievements(95)
 end)
