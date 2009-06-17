@@ -49,7 +49,7 @@ local function sendAchievement(event, achievementID, players)
 		
 		sendMessage(event, string.format(L["%s have earned the achievement %s!"], table.concat(players, ", "), GetAchievementLink(achievementID)))
 	-- Only one person, send it as singular form + include brackets
-	else
+	elseif( #(players) == 1 ) then
 		sendMessage(event, string.format(L["|Hplayer:%s|h[%s]|h has earned the achievement %s!"], players[1], players[1], GetAchievementLink(achievementID)))
 	end
 end
