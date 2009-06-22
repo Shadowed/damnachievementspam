@@ -2,7 +2,7 @@
 	Damn Achievement Spam, Mayen of Mal'Ganis (US) PvP
 ]]
 
-local achievements, chatFrames, spamCategories, specialFilters = {}, {}, {[168] = true, [95] = true}, {1400, 456, 1402, 3259, 3117}
+local achievements, chatFrames, spamCategories, specialFilters = {}, {}, {[155] = true, [168] = true, [95] = true}, {1400, 456, 1402, 3259, 3117}
 local frame = CreateFrame("Frame")
 frame:Hide()
 
