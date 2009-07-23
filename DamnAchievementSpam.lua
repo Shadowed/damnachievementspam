@@ -2,7 +2,9 @@
 	Damn Achievement Spam, Mayen of Mal'Ganis (US) PvP
 ]]
 
-local achievements, chatFrames, spamCategories, specialFilters = {}, {}, {[155] = true, [168] = true, [95] = true}, {1400, 456, 1402, 3259, 3117}
+local achievements, chatFrames = {}, {}
+local spamCategories, specialFilters = {[155] = true, [168] = true, [95] = true}, {1400, 456, 1402, 3259, 3117}
+local _G = getfenv(0)
 local frame = CreateFrame("Frame")
 frame:Hide()
 
@@ -15,7 +17,7 @@ local L = {
 local function sendMessage(event, msg, r, g, b)
 	local info = ChatTypeInfo[string.sub(event, 10)]
 	for i=1, 7 do
-		chatFrames[i] = chatFrames[i] or getglobal("ChatFrame" .. i)
+		chatFrames[i] = chatFrames[i] or _G["ChatFrame" .. i]
 		if( chatFrames[i] and chatFrames[i]:IsEventRegistered(event) ) then
 			chatFrames[i]:AddMessage(msg, info.r, info.g, info.b)
 		end

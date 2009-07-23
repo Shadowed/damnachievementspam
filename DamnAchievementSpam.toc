@@ -1,4 +1,4 @@
-## Interface: 30100
+## Interface: 30200
 ## Title: Damn Achievement Spam
 ## Notes: Reduces the spam in guild chat for people getting dungeon achievements
 ## Author: Mayen
